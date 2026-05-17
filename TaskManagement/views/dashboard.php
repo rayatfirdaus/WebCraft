@@ -2,9 +2,8 @@
 session_start();
 include '../config/db.php';
 include '../models/WorkspaceModel.php';
-include '../models/ProjectModel.php'; // Member 2 এর মডেল ইনক্লুড করা হলো
+include '../models/ProjectModel.php'; 
 
-// অথেন্টিকেশন চেক (লগইন ছাড়া অ্যাক্সেস ব্লক) - Member 1
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
@@ -13,14 +12,12 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $my_workspaces = getUserWorkspaces($conn, $user_id);
 
-// Isset guard added to prevent undefined index notices
 if ((!isset($_SESSION['workspace_id']) || $_SESSION['workspace_id'] === null) && !empty($my_workspaces)) {
     $_SESSION['workspace_id'] = $my_workspaces[0]['id'];
 }
 
 $current_workspace_id = isset($_SESSION['workspace_id']) ? $_SESSION['workspace_id'] : null;
 
-// ইউজারের যদি কোনো ওয়ার্কস্পেস না থাকে এবং সেশন নাল থাকে, প্রথম ওয়ার্কস্পেসটি অটো-সেট করা
 if ($_SESSION['workspace_id'] === null && !empty($my_workspaces)) {
     $_SESSION['workspace_id'] = $my_workspaces[0]['id'];
 }
@@ -144,12 +141,10 @@ $current_workspace_id = $_SESSION['workspace_id'];
         <?php else: ?>
             <div style="display:flex; flex-wrap:wrap; gap:15px;">
                 <?php foreach($projects as $proj): 
-                    // প্রগ্রেস পার্সেন্টেজ হিসাব - Member 2
                     $total = $proj['total_tasks'];
                     $done = $proj['done_tasks'];
                     $progress_percent = ($total > 0) ? round(($done / $total) * 100) : 0;
                     
-                    // ডেডলাইন পার্সিং ও ওভারডিউ ভ্যালিডেশন - Member 2
                     $is_overdue = (strtotime($proj['deadline']) < strtotime(date('Y-m-d'))) && ($progress_percent < 100);
                 ?>
                     <div style="border: 1px solid #ccc; border-left: 8px solid <?php echo $proj['color_label']; ?>; padding:15px; width:280px; border-radius:4px; background:#fff;">
