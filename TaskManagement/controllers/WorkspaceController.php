@@ -33,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['w_error'] = "Failed to create workspace!";
         }
         header("Location: ../views/dashboard.php");
+        exit();
     }
 
     if ($action == 'join') {
@@ -58,6 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['w_error'] = "Invalid Invite Code!";
         }
         header("Location: ../views/dashboard.php");
+        exit();
     }
 
     if ($action == 'remove_member') {
