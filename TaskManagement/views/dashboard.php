@@ -17,34 +17,39 @@ if ((!isset($_SESSION['workspace_id']) || $_SESSION['workspace_id'] === null) &&
 }
 
 $current_workspace_id = isset($_SESSION['workspace_id']) ? $_SESSION['workspace_id'] : null;
-
-if ($_SESSION['workspace_id'] === null && !empty($my_workspaces)) {
-    $_SESSION['workspace_id'] = $my_workspaces[0]['id'];
-}
-
-$current_workspace_id = $_SESSION['workspace_id'];
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Dashboard</title>
-    <script src="../assets/js/workspace.js"></script> </head>
+    <script src="../assets/js/workspace.js"></script> 
+</head>
 <body>
     <div style="background:#f4f4f4; padding:10px; display:flex; justify-content:space-between;">
         <span>Welcome, <b><?php echo $_SESSION['name']; ?></b></span>
         
-        <form action="../controllers/WorkspaceController.php" method="GET" style="display:inline;">
-            <label>Switch Workspace:</label>
+        <form action="../controllers/WorkspaceController.php" method="GET" style="margin: 0;">
             <select name="switch_id" onchange="this.form.submit()">
                 <?php foreach($my_workspaces as $ws): ?>
-                    <option value="<?php echo $ws['id']; ?>" <?php if($ws['id'] == $current_workspace_id) echo 'selected'; ?>>
-                        <?php echo $ws['name']; ?>
-                    </option>
+                    <option value="<?php echo $ws['id']; ?>" <?php if($ws['id'] == $current_workspace_id) echo 'selected'; ?>><?php echo $ws['name']; ?></option>
                 <?php endforeach; ?>
             </select>
         </form>
-
         <a href="../controllers/AuthController.php?action=logout">Logout</a>
+    </div>
+
+    <div style="background:#e9ecef; padding:10px; margin-top:10px; display:flex; gap:20px; border-radius:5px;">
+        <form action="../controllers/WorkspaceController.php" method="POST">
+            <input type="hidden" name="action" value="create">
+            <input type="text" name="name" placeholder="New Workspace Name" required style="padding:5px;">
+            <button type="submit" style="padding:5px 10px; background:#2c3e50; color:white; border:none; cursor:pointer;">+ Create Workspace</button>
+        </form>
+        
+        <form action="../controllers/WorkspaceController.php" method="POST">
+            <input type="hidden" name="action" value="join">
+            <input type="text" name="invite_code" placeholder="Enter Invite Code" required style="padding:5px;">
+            <button type="submit" style="padding:5px 10px; background:#2980b9; color:white; border:none; cursor:pointer;">Join Workspace</button>
+        </form>
     </div>
 
     <?php if(isset($_SESSION['w_success'])): ?>
@@ -55,28 +60,7 @@ $current_workspace_id = $_SESSION['workspace_id'];
     <?php endif; ?>
 
     <?php if($current_workspace_id === null): ?>
-        <h3>You are not part of any workspace. Create or Join one!</h3>
-        <table border="1" cellpadding="10">
-            <tr>
-                <td>
-                    <h4>Create Workspace</h4>
-                    <form action="../controllers/WorkspaceController.php" method="POST">
-                        <input type="hidden" name="action" value="create">
-                        <input type="text" name="name" placeholder="Workspace Name" required><br><br>
-                        <textarea name="description" placeholder="Description"></textarea><br><br>
-                        <button type="submit">Create</button>
-                    </form>
-                </td>
-                <td>
-                    <h4>Join Workspace</h4>
-                    <form action="../controllers/WorkspaceController.php" method="POST">
-                        <input type="hidden" name="action" value="join">
-                        <input type="text" name="invite_code" placeholder="6-Char Code" required><br><br>
-                        <button type="submit">Join</button>
-                    </form>
-                </td>
-            </tr>
-        </table>
+        <h3>You are not part of any workspace. Create or Join one using the form above!</h3>
     <?php else: ?>
         
         <?php
