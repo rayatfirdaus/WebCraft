@@ -46,9 +46,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $_SESSION['p_success'] = "Project saved successfully!";
             header("Location: ../views/dashboard.php");
+            exit();
         } else {
             $_SESSION['p_error'] = "Database operation failed!";
             header("Location: ../views/project_form.php");
+            exit();
         }
     }
 
